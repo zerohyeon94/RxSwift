@@ -170,21 +170,26 @@ class ViewController: UIViewController {
         // 2-1. 직접 만들어 보기
         let observable = downloadJson(MEMBER_LIST_URL)
         
-        let disposable = observable.subscribe { event in
-            switch event {
-            case .next(let json):
-                DispatchQueue.main.async {
-                    self.editView.text = json
-                    self.setVisibleWithAnimation(self.activityIndicator, false)
-                }
-                break
-            case .error(let err):
-                break
-            case .completed:
-                break
-            }
-        }
-        // 작업을 취소할 때 아래 코드 사용.
+        // 한줄로 subscribe를 처리할 수 있음.
+        let disposable = observable.subscribe(onNext: { print($0) },
+                                              onError: {err in print(err) },
+                                              onCompleted: { print("onCompleted") })
+        
+//        let disposable = observable.subscribe { event in
+//            switch event {
+//            case .next(let json):
+//                DispatchQueue.main.async {
+//                    self.editView.text = json
+//                    self.setVisibleWithAnimation(self.activityIndicator, false)
+//                }
+//                break
+//            case .error(let err):
+//                break
+//            case .completed:
+//                break
+//            }
+//        }
+//        // 작업을 취소할 때 아래 코드 사용.
 //        disposable.dispose()
         
 //        // RxSwift를 사용할 경우
