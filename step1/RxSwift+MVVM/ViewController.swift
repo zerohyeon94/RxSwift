@@ -31,11 +31,18 @@ class ViewController: UIViewController {
     @IBOutlet var timerLabel: UILabel!
     @IBOutlet var editView: UITextView!
     
+    var disposable: Disposable? // Disposable 대신 DisposeeBag
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             self?.timerLabel.text = "\(Date().timeIntervalSince1970)"
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        disposable?.dispose()
     }
     
     private func setVisibleWithAnimation(_ v: UIView?, _ s: Bool) {
@@ -172,7 +179,7 @@ class ViewController: UIViewController {
         let helloObservable = Observable.just("Hello World")
         
         // 한줄로 subscribe를 처리할 수 있음.
-        let disposable = Observable
+        disposable = Observable
             // operator에는 다양한 게 있다. https://reactivex.io/documentation/operators.html 참조
             // 구슬을 이용해서 설명하는게 마블 다이어그램
             // 가로 화살표는 Oservable
