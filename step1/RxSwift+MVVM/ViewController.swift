@@ -68,9 +68,9 @@ class ViewController: UIViewController {
     
     // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
     // 기존의 RxSwift의 Observable을 사용
-    func downloadJson(_ url: String) -> Observable<String?> { // Observable<String?> 나중에 생기는 데이터
+    func downloadJson(_ url: String) -> Observable<String> { // Observable<String?> 나중에 생기는 데이터
         // 0-1. 만약에 데이터 하나만 보낼경우
-        return Observable.just("Hello World")
+//        return Observable.just("Hello World")
         // 1-1. 직접 만들어보기
 //        return Observable.create() { emitter in // 클로저가 들어간다.
 //            emitter.onNext("Hello") // 데이터 전달 시에 'onNext' 사용
@@ -80,28 +80,28 @@ class ViewController: UIViewController {
 //            
 //            return Disposables.create() // Observable를 생성된 후 해당되는 코드에서 구독을 취소할 때, 리소스 누수를 방지. *Disposables: 리소스 정리 및 해제를 위한 도구
 //        }
-//        // 1-2. URLSession 사용
-//        return Observable.create() { emitter in // 클로저가 들어간다.
-//            let url = URL(string: url)!
-//            let task = URLSession.shared.dataTask(with: url) { (data, _, err) in
-//                guard err == nil else { // nil이 아닌 경우 아래 코드 실행
-//                    emitter.onError(err!) // error가 생겼다.
-//                    return
-//                }
-//                
-//                if let dat = data, let json = String(data: dat, encoding: .utf8) {
-//                    emitter.onNext(json)
-//                }
-//                
-//                emitter.onCompleted()
-//            }
-//            
-//            task.resume()
-//            
-//            return Disposables.create() { // Observable를 생성된 후 해당되는 코드에서 구독을 취소할 때, 리소스 누수를 방지. *Disposables: 리소스 정리 및 해제를 위한 도구
-//                task.cancel() // URLSession의 데이터 작업을 취소하는 메서드
-//            }
-//        }
+        // 1-2. URLSession 사용
+        return Observable.create() { emitter in // 클로저가 들어간다.
+            let url = URL(string: url)!
+            let task = URLSession.shared.dataTask(with: url) { (data, _, err) in
+                guard err == nil else { // nil이 아닌 경우 아래 코드 실행
+                    emitter.onError(err!) // error가 생겼다.
+                    return
+                }
+                
+                if let dat = data, let json = String(data: dat, encoding: .utf8) {
+                    emitter.onNext(json)
+                }
+                
+                emitter.onCompleted()
+            }
+            
+            task.resume()
+            
+            return Disposables.create() { // Observable를 생성된 후 해당되는 코드에서 구독을 취소할 때, 리소스 누수를 방지. *Disposables: 리소스 정리 및 해제를 위한 도구
+                task.cancel() // URLSession의 데이터 작업을 취소하는 메서드
+            }
+        }
         
 //        return Observable.create { f in
 //            DispatchQueue.global().async {
@@ -169,9 +169,22 @@ class ViewController: UIViewController {
         // 2. Observable로 오는 데이터를 받아서 처리하는 방법
         // 2-1. 직접 만들어 보기
         let observable = downloadJson(MEMBER_LIST_URL)
+        let helloObservable = Observable.just("Hello World")
         
         // 한줄로 subscribe를 처리할 수 있음.
-        let disposable = observable.subscribe(onNext: { print($0) },
+        let disposable = Observable
+            // operator에는 다양한 게 있다. https://reactivex.io/documentation/operators.html 참조
+            // 구슬을 이용해서 설명하는게 마블 다이어그램
+            // 가로 화살표는 Oservable
+//            .map { json in json?.count ?? 0} // .count를 이용해서 정수형으로 바꿀 수 있다. -> operator
+//            .filter { cnt in cnt > 0 } // 0보다 큰 것만 모으고 -> operator
+//            .map { "\($0)" } // 다시 String으로 바꿀 수 있다. -> operator
+            .zip(observable, helloObservable) { $1 + "\n" + $0 } // zip을 통해 두개의 observable를 합쳤다.
+            .observeOn(MainScheduler.instance) // DispatchQueue.main.async {}로 감싸줘야하는 것을 없애줌. -> super : operator. 다음줄에서 영향을 줌.
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default)) // 위치에 상관없이 어디에서 시작할지를 정해줌.
+            .subscribe(onNext: { json in
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false) },
                                               onError: {err in print(err) },
                                               onCompleted: { print("onCompleted") })
         
