@@ -7,14 +7,56 @@
 //
 
 import Foundation
+import RxSwift
 
 class MenuListViewModel {
     
-    let menus: [Menu] = [
-        Menu(name: "튀김1", price: 1000, count: 0),
-        Menu(name: "튀김2", price: 1000, count: 0),
-        Menu(name: "튀김3", price: 1000, count: 0),
-        Menu(name: "튀김4", price: 1000, count: 0),
-        Menu(name: "튀김5", price: 1000, count: 0),
-    ]
+    //    var itemsCount: Int = 5
+    // var totalPrice: Int = 10_000
+    // var totalPrice: Observable<Int> = Observable.just(10_000)
+    
+    // Subject를 사용하게되면 옵저버블 외부에서 접근이 가능하다.
+    // var totalPrice: PublishSubject<Int> = PublishSubject()
+    
+    //    lazy var menuObservable = Observable.just(menus)
+    // 1. menu array를 주어지게되면 옵저버블이 동작함
+    //    var menuObservable = PublishSubject<[Menu]>()// 외부에서도 접근이 가능하게 하기 위해
+    
+    var menuObservable = BehaviorSubject<[Menu]>(value: []) // init에서 초기값이 들어가야한다.
+    
+    lazy var itemsCount = menuObservable.map {
+        $0.map {
+            $0.count
+        }.reduce(0, +)
+    }
+    lazy var totalPrice = menuObservable.map {
+        $0.map {
+            $0.price * $0.count
+        }.reduce(0, +)
+    }
+    
+    init() {
+        var menus: [Menu] = [
+            Menu(name: "튀김1", price: 1000, count: 0),
+            Menu(name: "튀김2", price: 1000, count: 0),
+            Menu(name: "튀김3", price: 1000, count: 0),
+            Menu(name: "튀김4", price: 1000, count: 0),
+            Menu(name: "튀김5", price: 1000, count: 0),
+        ]
+        
+        menuObservable.onNext(menus)
+    }
+    
+    func clearAllItemSelections() {
+        _ = menuObservable
+            .map { menus in
+                return menus.map { m in
+                    Menu(name: m.name, price: m.price, count: 0)
+                }
+            }
+            .take(1) // 한번만 수행한다.
+            .subscribe(onNext: {
+                self.menuObservable.onNext($0)
+            })
+    }
 }
