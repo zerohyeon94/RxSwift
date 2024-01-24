@@ -10,7 +10,7 @@ import Foundation
 
 // ViewModel
 struct Menu {
-    var naem: String
+    var name: String
     var price: Int
     var count: Int
 }

@@ -18,6 +18,7 @@
 		A168F0BE22FAFAC300A9E178 /* OrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A168F0BD22FAFAC300A9E178 /* OrderViewController.swift */; };
 		A1869B8D2360A8000088AA9A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1869B8C2360A8000088AA9A /* Extensions.swift */; };
 		CFB7AA912B60AFC9005436C7 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB7AA902B60AFC9005436C7 /* Menu.swift */; };
+		CFB7AA932B60B539005436C7 /* MenuListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB7AA922B60B539005436C7 /* MenuListViewModel.swift */; };
 		E2AFEEC81F02AC78E0249DDC /* Pods_RxSwift_MVVM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3442FB936BB096840300742 /* Pods_RxSwift_MVVM.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		A1869B8C2360A8000088AA9A /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C566DF4A5E7D8CFD17BE3140 /* Pods-RxSwift+MVVM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxSwift+MVVM.release.xcconfig"; path = "Target Support Files/Pods-RxSwift+MVVM/Pods-RxSwift+MVVM.release.xcconfig"; sourceTree = "<group>"; };
 		CFB7AA902B60AFC9005436C7 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		CFB7AA922B60B539005436C7 /* MenuListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListViewModel.swift; sourceTree = "<group>"; };
 		D3442FB936BB096840300742 /* Pods_RxSwift_MVVM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxSwift_MVVM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -141,6 +143,7 @@
 			children = (
 				A168F0A122F7FB2C00A9E178 /* MenuViewController.swift */,
 				A168F0BB22FAF9B800A9E178 /* MenuItemTableViewCell.swift */,
+				CFB7AA922B60B539005436C7 /* MenuListViewModel.swift */,
 			);
 			path = MenuList;
 			sourceTree = "<group>";
@@ -301,6 +304,7 @@
 				A168F0BC22FAF9B800A9E178 /* MenuItemTableViewCell.swift in Sources */,
 				A168F0A022F7FB2C00A9E178 /* AppDelegate.swift in Sources */,
 				A168F0B822FADE7000A9E178 /* Model.swift in Sources */,
+				CFB7AA932B60B539005436C7 /* MenuListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
