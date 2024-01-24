@@ -30,6 +30,11 @@ class MenuViewController: UIViewController {
                 cell.title.text = item.name
                 cell.price.text = "\(item.price)"
                 cell.count.text = "\(item.count)"
+                
+                // cell item 추가
+                cell.onChange = { [weak self] increase in
+                    self?.viewModel.changeCount(item: item, increase: increase)
+                }
             }
             .disposed(by: disposeBag)
         
@@ -94,9 +99,9 @@ class MenuViewController: UIViewController {
 //        updateUI()
         
         viewModel.menuObservable.onNext([
-            Menu(name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-            Menu(name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-            Menu(name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3))
+            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
+            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
+            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3))
         ])
     }
     
