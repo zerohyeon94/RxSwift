@@ -36,15 +36,31 @@ class MenuListViewModel {
     }
     
     init() {
-        var menus: [Menu] = [
-            Menu(id: 0, name: "튀김1", price: 1000, count: 0),
-            Menu(id: 1, name: "튀김2", price: 1000, count: 0),
-            Menu(id: 2, name: "튀김3", price: 1000, count: 0),
-            Menu(id: 3, name: "튀김4", price: 1000, count: 0),
-            Menu(id: 4, name: "튀김5", price: 1000, count: 0),
-        ]
+        // 데이터를 넣는 부분
+        _ = APIService.fetchAllMenusRx()
+            .map { data -> [MenuItem] in
+                struct Response: Decodable {
+                    let menus: [MenuItem]
+                }
+                
+                let response = try! JSONDecoder().decode(Response.self, from: data)
+                
+                return response.menus
+            }
+            .map { menuItems -> [Menu] in
+                var menus: [Menu] = []
+                menuItems.enumerated().forEach { (index, item) in
+                    let menu = Menu.fromMenuItems(id: index, item: item)
+                    menus.append(menu)
+                }
+                return menus
+            }
+            .take(1)
+            .bind(to: menuObservable)
+    }
+    
+    func onOrder() {
         
-        menuObservable.onNext(menus)
     }
     
     func clearAllItemSelections() {
@@ -65,9 +81,9 @@ class MenuListViewModel {
             .map { menus in
                 menus.map { m in
                     if m.id == item.id {
-                        Menu(id: m.id, name: m.name, price: m.price, count: m.count + increase)
+                        return Menu(id: m.id, name: m.name, price: m.price, count: max(m.count + increase, 0))
                     } else {
-                        Menu(id: m.id, name: m.name, price: m.price, count: m.count)
+                        return Menu(id: m.id, name: m.name, price: m.price, count: m.count)
                     }
                     
                 }

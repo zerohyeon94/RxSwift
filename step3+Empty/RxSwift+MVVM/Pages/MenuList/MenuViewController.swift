@@ -97,6 +97,7 @@ class MenuViewController: UIViewController {
 //        viewModel.totalPrice.onNext(100)
         
 //        updateUI()
+        viewModel.onOrder()
         
         viewModel.menuObservable.onNext([
             Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
